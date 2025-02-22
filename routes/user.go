@@ -1,10 +1,11 @@
 package routes
 
 import (
+	"net/http"
+
 	"example.com/task-managment/models"
 	"example.com/task-managment/utils"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func signUp(context *gin.Context) {
