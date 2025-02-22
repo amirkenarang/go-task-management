@@ -2,12 +2,12 @@ package routes
 
 import (
 	"example.com/task-managment/internal/handlers"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
 // UserRoutes registers user-related endpoints
-func UserRoutes(router *gin.RouterGroup) {
+func UserRoutes(router fiber.Router) {
 
-	router.POST("/signup", handlers.SignUp)
-	router.POST("/login", handlers.Login)
+	router.Post("/signup", handlers.SignUp)
+	router.Post("/login", handlers.Login)
 }

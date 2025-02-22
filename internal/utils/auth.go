@@ -1,13 +1,13 @@
 package utils
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
 // GetAuthUser retrieves the authenticated user from the context
-func GetAuthUser(c *gin.Context) (AuthUser, bool) {
-	authUserInterface, exists := c.Get("authUser")
-	if !exists {
+func GetAuthUser(c *fiber.Ctx) (AuthUser, bool) {
+	authUserInterface := c.Locals("authUser")
+	if authUserInterface == nil {
 		return AuthUser{}, false
 	}
 

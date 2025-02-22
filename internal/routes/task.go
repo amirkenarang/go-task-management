@@ -2,14 +2,14 @@ package routes
 
 import (
 	"example.com/task-managment/internal/handlers"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
-func TaskRoutes(router *gin.RouterGroup) {
+func TaskRoutes(router fiber.Router) {
 
-	router.GET("/tasks", handlers.GetTasks)
-	router.GET("/tasks/:id", handlers.GetTask)
-	router.POST("/tasks", handlers.CreateTasks)
-	router.PUT("/tasks/:id", handlers.UpdateTask)
-	router.DELETE("/tasks/:id", handlers.DeleteTask)
+	router.Get("/tasks", handlers.GetTasks)
+	router.Get("/tasks/:id", handlers.GetTask)
+	router.Post("/tasks", handlers.CreateTasks)
+	router.Put("/tasks/:id", handlers.UpdateTask)
+	router.Delete("/tasks/:id", handlers.DeleteTask)
 }

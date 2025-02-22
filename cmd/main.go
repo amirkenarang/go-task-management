@@ -3,16 +3,19 @@ package main
 import (
 	"example.com/task-managment/internal/db"
 	"example.com/task-managment/internal/routes"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
 
 	db.InitDB()
-	server := gin.Default()
+	// Create a new Fiber app
+	app := fiber.New()
 
-	routes.RegisterRoutes(server)
+	// Register all routes
+	routes.RegisterRoutes(app)
 
-	server.Run(":8080") // localhost:8080
+	// Start the server at localhost:8080
+	app.Listen(":8080")
 
 }

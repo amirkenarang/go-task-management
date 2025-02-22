@@ -4,22 +4,24 @@ import (
 	"net/http"
 
 	"example.com/task-managment/internal/utils"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
-func Authenticate(context *gin.Context) {
-	token := context.GetHeader("Authorization")
+func Authenticate(context *fiber.Ctx) error {
+	token := context.Get("Authorization")
 	if token == "" {
-		context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "No token provided."})
-		return
+		return context.Status(http.StatusUnauthorized).JSON(fiber.Map{
+			"message": "No token provided.",
+		})
 	}
 
 	authUser, err := utils.VerifyToken(token)
 	if err != nil {
-		context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "Invalid token. Try again later."})
-		return
+		return context.Status(http.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Invalid token. Try again later.",
+		})
 	}
 
-	context.Set("authUser", authUser)
-	context.Next()
+	context.Locals("authUser", authUser)
+	return context.Next()
 }

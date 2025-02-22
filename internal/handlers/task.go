@@ -1,59 +1,53 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
 	"example.com/task-managment/internal/utils"
 
 	"example.com/task-managment/internal/models"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
-func GetTask(context *gin.Context) {
-	taskId, err := strconv.ParseInt(context.Param("id"), 10, 64)
+func GetTask(context *fiber.Ctx) error {
+	taskId, err := strconv.ParseInt(context.Params("id"), 10, 64)
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch task. Try again later."})
-		return
+		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not fetch task. Try again later."})
+
 	}
 
 	task, err := models.GetTaskById(taskId)
 
-	log.Printf("Error fetching task: %v", err) // Log the error
-
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch tasks. Try again later."})
-		return
+		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not fetch tasks. Try again later."})
+
 	}
-	context.JSON(http.StatusOK, task)
+	return context.Status(http.StatusOK).JSON(task)
 }
 
-func GetTasks(context *gin.Context) {
+func GetTasks(context *fiber.Ctx) error {
 	tasks, err := models.GetAllTasks()
-	log.Printf("Error fetching tasks: %v", err) // Log the error
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch tasks. Try again later."})
-		return
+		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not fetch tasks. Try again later."})
+
 	}
-	context.JSON(http.StatusOK, tasks)
+	return context.Status(http.StatusOK).JSON(tasks)
 }
 
-func CreateTasks(context *gin.Context) {
+func CreateTasks(context *fiber.Ctx) error {
 	var task models.Task
-	err := context.ShouldBindJSON(&task)
+	err := context.BodyParser(&task)
 
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request data."})
-		return
+		return context.Status(http.StatusBadRequest).JSON(fiber.Map{"message": "Could not parse request data."})
 	}
 
 	authUser, exists := utils.GetAuthUser(context)
 	if !exists {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "User does not exist in context"})
-		return
+		return context.Status(http.StatusUnauthorized).JSON(fiber.Map{"message": "User does not exist in context"})
 	}
 
 	task.UserID = authUser.UserId
@@ -61,46 +55,40 @@ func CreateTasks(context *gin.Context) {
 	err = task.Save()
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not create task. Try again later."})
-		return
+		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not create task. Try again later."})
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"message": "Task created!", "task": task})
+	return context.Status(http.StatusCreated).JSON(fiber.Map{"message": "Task created!", "task": task})
 }
 
-func UpdateTask(context *gin.Context) {
-	taskId, err := strconv.ParseInt(context.Param("id"), 10, 64)
+func UpdateTask(context *fiber.Ctx) error {
+	taskId, err := strconv.ParseInt(context.Params("id"), 10, 64)
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch task. Try again later."})
-		return
+		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not fetch task. Try again later."})
 	}
 
 	authUser, exists := utils.GetAuthUser(context)
 	if !exists {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "User does not exist in context"})
-		return
+		return context.Status(http.StatusUnauthorized).JSON(fiber.Map{"message": "User does not exist in context"})
 	}
 
 	task, err := models.GetTaskById(taskId)
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch the task."})
-		return
+		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not fetch the task."})
 	}
 
 	if task.UserID != authUser.UserId {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "User not Not authorized for update this task!"})
-		return
+		return context.Status(http.StatusUnauthorized).JSON(fiber.Map{"message": "User not Not authorized for update this task!"})
 	}
 
 	var updatedTask models.Task
 
-	err = context.ShouldBindJSON(&updatedTask)
+	err = context.BodyParser(&updatedTask)
 
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request data."})
-		return
+		return context.Status(http.StatusBadRequest).JSON(fiber.Map{"message": "Could not parse request data."})
 	}
 
 	updatedTask.ID = taskId
@@ -108,44 +96,38 @@ func UpdateTask(context *gin.Context) {
 	err = updatedTask.Update()
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not update task. Try again later."})
-		return
+		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not update task. Try again later."})
 	}
 
-	context.JSON(http.StatusOK, gin.H{"message": "Updated Successfully"})
+	return context.Status(http.StatusOK).JSON(fiber.Map{"message": "Updated Successfully"})
 
 }
 
-func DeleteTask(context *gin.Context) {
-	taskId, err := strconv.ParseInt(context.Param("id"), 10, 64)
+func DeleteTask(context *fiber.Ctx) error {
+	taskId, err := strconv.ParseInt(context.Params("id"), 10, 64)
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch id. Try again later."})
-		return
+		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not fetch id. Try again later."})
 	}
 
 	task, err := models.GetTaskById(taskId)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch tasks. Try again later."})
-		return
+		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not fetch tasks. Try again later."})
 	}
 
 	authUser, exists := utils.GetAuthUser(context)
 	if !exists {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "User does not exist in context"})
-		return
+		return context.Status(http.StatusUnauthorized).JSON(fiber.Map{"message": "User does not exist in context"})
 	}
 	if task.UserID != authUser.UserId {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "User not Not authorized to delete this task"})
-		return
+		return context.Status(http.StatusUnauthorized).JSON(fiber.Map{"message": "User not Not authorized to delete this task"})
 	}
 
 	err = task.Delete()
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not delete task. Try again later."})
-		return
+		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not delete task. Try again later."})
 	}
 
-	context.JSON(http.StatusOK, gin.H{"message": "Deleted Successfully"})
+	return context.Status(http.StatusOK).JSON(fiber.Map{"message": "Deleted Successfully"})
 
 }

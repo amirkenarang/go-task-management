@@ -5,47 +5,43 @@ import (
 
 	"example.com/task-managment/internal/models"
 	"example.com/task-managment/internal/utils"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
-func SignUp(context *gin.Context) {
+func SignUp(context *fiber.Ctx) error {
 
 	var user models.User
-	err := context.ShouldBindJSON(&user)
+	err := context.BodyParser(&user)
 
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request data.", "error": err.Error()})
-		return
+		return context.Status(http.StatusBadRequest).JSON(fiber.Map{"message": "Could not parse request data.", "error": err.Error()})
 	}
 
 	err = user.Save()
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not save user. ", "error": err.Error()})
+		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not save user. ", "error": err.Error()})
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"message": "User created successfully.", "user": user})
+	return context.Status(http.StatusCreated).JSON(fiber.Map{"message": "User created successfully.", "user": user})
 }
 
-func Login(context *gin.Context) {
+func Login(context *fiber.Ctx) error {
 	var user models.User
-	err := context.ShouldBindJSON(&user)
+	err := context.BodyParser(&user)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request data.", "error": err.Error()})
-		return
+		return context.Status(http.StatusBadRequest).JSON(fiber.Map{"message": "Could not parse request data.", "error": err.Error()})
 	}
 
 	err = user.ValidateCredentioals()
 	if err != nil {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "Could not authenticate user", "error": err.Error()})
-		return
+		return context.Status(http.StatusUnauthorized).JSON(fiber.Map{"message": "Could not authenticate user", "error": err.Error()})
 	}
 
 	token, err := utils.GenerateToken(user.Email, user.ID)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not generate token.", "error": err.Error()})
-		return
+		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not generate token.", "error": err.Error()})
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"message": "Login successfully.", "user": user, "token": token})
+	return context.Status(http.StatusCreated).JSON(fiber.Map{"message": "Login successfully.", "user": user, "token": token})
 
 }

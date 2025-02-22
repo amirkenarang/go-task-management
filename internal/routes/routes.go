@@ -2,15 +2,15 @@ package routes
 
 import (
 	"example.com/task-managment/internal/middlewares"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
-func RegisterRoutes(router *gin.Engine) {
-	api := router.Group("/api") // Group all API routes under `/api`
-
-	authenticated := router.Group("/api") // Group all API routes under `/api`
-	authenticated.Use(middlewares.Authenticate)
-
-	TaskRoutes(authenticated)
+func RegisterRoutes(app *fiber.App) {
+	api := app.Group("/api") // Group all API routes under `/api`
 	UserRoutes(api)
+
+	authenticated := api.Group("/") // Group all API routes under `/api`
+	authenticated.Use(middlewares.Authenticate)
+	TaskRoutes(authenticated)
+
 }
