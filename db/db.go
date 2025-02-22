@@ -23,6 +23,23 @@ func InitDB() {
 }
 
 func createTables() {
+
+	createUsersTable := `CREATE TABLE IF NOT EXISTS users (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		email TEXT NOT NULL UNIQUE,
+		name TEXT NOT NULL,
+		password TEXT NOT NULL,
+		role TEXT DEFAULT 'user',
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+	);`
+
+	_, err := DB.Exec(createUsersTable)
+
+	if err != nil {
+		panic("Could not create users table.")
+	}
+
 	createTasksTable := `
     CREATE TABLE IF NOT EXISTS tasks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,10 +52,11 @@ func createTables() {
         priority TEXT NOT NULL DEFAULT 'Medium',
         due_date DATETIME,
         user_id INTEGER,
-        project_id INTEGER
+        project_id INTEGER,
+		FOREIGN KEY (user_id) REFERENCES users(id)
     );`
 
-	_, err := DB.Exec(createTasksTable)
+	_, err = DB.Exec(createTasksTable)
 
 	if err != nil {
 		panic("Could not create tasks table.")

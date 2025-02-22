@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"example.com/task-managment/utils"
 	"log"
 	"net/http"
 	"strconv"
@@ -48,8 +49,13 @@ func createTasks(context *gin.Context) {
 		return
 	}
 
-	task.ID = 1
-	task.UserID = 1
+	authUser, exists := utils.GetAuthUser(context)
+	if !exists {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "User does not exist in context"})
+		return
+	}
+
+	task.UserID = authUser.UserId
 
 	err = task.Save()
 
@@ -69,10 +75,22 @@ func updateTask(context *gin.Context) {
 		return
 	}
 
-	_, err = models.GetTaskById(taskId)
+	authUser, exists := utils.GetAuthUser(context)
+	if !exists {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "User does not exist in context"})
+		return
+	}
+
+	task, err := models.GetTaskById(taskId)
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch the task."})
+		return
+	}
+
+	if task.UserID != authUser.UserId {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "User not Not authorized for update this task!"})
+		return
 	}
 
 	var updatedTask models.Task
@@ -94,5 +112,39 @@ func updateTask(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, gin.H{"message": "Updated Successfully"})
+
+}
+
+func deleteTask(context *gin.Context) {
+	taskId, err := strconv.ParseInt(context.Param("id"), 10, 64)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch id. Try again later."})
+		return
+	}
+
+	task, err := models.GetTaskById(taskId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch tasks. Try again later."})
+		return
+	}
+
+	authUser, exists := utils.GetAuthUser(context)
+	if !exists {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "User does not exist in context"})
+		return
+	}
+	if task.UserID != authUser.UserId {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "User not Not authorized to delete this task"})
+		return
+	}
+
+	err = task.Delete()
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not delete task. Try again later."})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"message": "Deleted Successfully"})
 
 }
