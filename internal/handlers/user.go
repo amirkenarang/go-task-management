@@ -1,14 +1,14 @@
-package routes
+package handlers
 
 import (
 	"net/http"
 
-	"example.com/task-managment/models"
-	"example.com/task-managment/utils"
+	"example.com/task-managment/internal/models"
+	"example.com/task-managment/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 
-func signUp(context *gin.Context) {
+func SignUp(context *gin.Context) {
 
 	var user models.User
 	err := context.ShouldBindJSON(&user)
@@ -26,7 +26,7 @@ func signUp(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"message": "User created successfully.", "user": user})
 }
 
-func login(context *gin.Context) {
+func Login(context *gin.Context) {
 	var user models.User
 	err := context.ShouldBindJSON(&user)
 	if err != nil {

@@ -1,16 +1,17 @@
-package routes
+package handlers
 
 import (
-	"example.com/task-managment/utils"
 	"log"
 	"net/http"
 	"strconv"
 
-	"example.com/task-managment/models"
+	"example.com/task-managment/internal/utils"
+
+	"example.com/task-managment/internal/models"
 	"github.com/gin-gonic/gin"
 )
 
-func getTask(context *gin.Context) {
+func GetTask(context *gin.Context) {
 	taskId, err := strconv.ParseInt(context.Param("id"), 10, 64)
 
 	if err != nil {
@@ -29,7 +30,7 @@ func getTask(context *gin.Context) {
 	context.JSON(http.StatusOK, task)
 }
 
-func getTasks(context *gin.Context) {
+func GetTasks(context *gin.Context) {
 	tasks, err := models.GetAllTasks()
 	log.Printf("Error fetching tasks: %v", err) // Log the error
 
@@ -40,7 +41,7 @@ func getTasks(context *gin.Context) {
 	context.JSON(http.StatusOK, tasks)
 }
 
-func createTasks(context *gin.Context) {
+func CreateTasks(context *gin.Context) {
 	var task models.Task
 	err := context.ShouldBindJSON(&task)
 
@@ -67,7 +68,7 @@ func createTasks(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"message": "Task created!", "task": task})
 }
 
-func updateTask(context *gin.Context) {
+func UpdateTask(context *gin.Context) {
 	taskId, err := strconv.ParseInt(context.Param("id"), 10, 64)
 
 	if err != nil {
@@ -115,7 +116,7 @@ func updateTask(context *gin.Context) {
 
 }
 
-func deleteTask(context *gin.Context) {
+func DeleteTask(context *gin.Context) {
 	taskId, err := strconv.ParseInt(context.Param("id"), 10, 64)
 
 	if err != nil {

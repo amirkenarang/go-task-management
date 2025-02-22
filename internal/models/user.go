@@ -2,8 +2,9 @@ package models
 
 import (
 	"errors"
-	"example.com/task-managment/db"
-	"example.com/task-managment/utils"
+
+	"example.com/task-managment/internal/db"
+	"example.com/task-managment/internal/utils"
 )
 
 type User struct {

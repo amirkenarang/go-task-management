@@ -1,8 +1,8 @@
 package main
 
 import (
-	"example.com/task-managment/db"
-	"example.com/task-managment/routes"
+	"example.com/task-managment/internal/db"
+	"example.com/task-managment/internal/routes"
 	"github.com/gin-gonic/gin"
 )
 

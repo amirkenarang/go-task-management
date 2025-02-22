@@ -1,9 +1,10 @@
 package middlewares
 
 import (
-	"example.com/task-managment/utils"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"example.com/task-managment/internal/utils"
+	"github.com/gin-gonic/gin"
 )
 
 func Authenticate(context *gin.Context) {

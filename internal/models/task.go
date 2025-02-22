@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"example.com/task-managment/db"
+	"example.com/task-managment/internal/db"
 )
 
 type Task struct {
