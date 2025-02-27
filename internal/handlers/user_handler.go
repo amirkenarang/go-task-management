@@ -4,11 +4,20 @@ import (
 	"net/http"
 
 	"example.com/task-managment/internal/models"
+	"example.com/task-managment/internal/repository"
 	"example.com/task-managment/internal/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
-func SignUp(context *fiber.Ctx) error {
+type UserHandler struct {
+	Repo *repository.UserRepository
+}
+
+func NewUserHandler(repo *repository.UserRepository) *UserHandler {
+	return &UserHandler{Repo: repo}
+}
+
+func (h *UserHandler) SignUp(context *fiber.Ctx) error {
 
 	var user models.User
 	err := context.BodyParser(&user)
@@ -17,7 +26,7 @@ func SignUp(context *fiber.Ctx) error {
 		return context.Status(http.StatusBadRequest).JSON(fiber.Map{"message": "Could not parse request data.", "error": err.Error()})
 	}
 
-	err = user.Save()
+	err = h.Repo.Save(&user)
 	if err != nil {
 		return context.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Could not save user. ", "error": err.Error()})
 	}
@@ -25,14 +34,14 @@ func SignUp(context *fiber.Ctx) error {
 	return context.Status(http.StatusCreated).JSON(fiber.Map{"message": "User created successfully.", "user": user})
 }
 
-func Login(context *fiber.Ctx) error {
+func (h *UserHandler) Login(context *fiber.Ctx) error {
 	var user models.User
 	err := context.BodyParser(&user)
 	if err != nil {
 		return context.Status(http.StatusBadRequest).JSON(fiber.Map{"message": "Could not parse request data.", "error": err.Error()})
 	}
 
-	err = user.ValidateCredentioals()
+	err = h.Repo.ValidateCredentioals(&user)
 	if err != nil {
 		return context.Status(http.StatusUnauthorized).JSON(fiber.Map{"message": "Could not authenticate user", "error": err.Error()})
 	}

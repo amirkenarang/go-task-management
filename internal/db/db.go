@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"log"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -13,7 +14,8 @@ func InitDB() {
 	DB, err = sql.Open("sqlite3", "api.db")
 
 	if err != nil {
-		panic("Could not connect to database.")
+		// Error log, is better that panic
+		log.Fatal(err)
 	}
 
 	DB.SetMaxOpenConns(10)
@@ -37,7 +39,7 @@ func createTables() {
 	_, err := DB.Exec(createUsersTable)
 
 	if err != nil {
-		panic("Could not create users table.")
+		log.Fatal(err)
 	}
 
 	createTasksTable := `
@@ -59,7 +61,7 @@ func createTables() {
 	_, err = DB.Exec(createTasksTable)
 
 	if err != nil {
-		panic("Could not create tasks table.")
+		log.Fatal(err)
 	}
 
 }
