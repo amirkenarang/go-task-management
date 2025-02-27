@@ -54,6 +54,13 @@ func (h *TaskHandler) CreateTasks(context *fiber.Ctx) error {
 	return context.Status(http.StatusCreated).JSON(fiber.Map{"message": "Task created!", "task": task})
 }
 
+// GetTask retrieves a task by its ID from the database.
+// It extracts the task ID from the request parameters, fetches the task using the repository,
+// and returns it as a JSON response.
+//
+// If the task ID is invalid, it returns a 500 Internal Server Error response.
+// If the task cannot be fetched, it returns a 500 Internal Server Error response.
+// On success, it returns a 200 OK response with the task details.
 func (h *TaskHandler) GetTask(context *fiber.Ctx) error {
 	taskId, err := strconv.ParseInt(context.Params("id"), 10, 64)
 
@@ -71,6 +78,10 @@ func (h *TaskHandler) GetTask(context *fiber.Ctx) error {
 	return context.Status(http.StatusOK).JSON(task)
 }
 
+// GetTasks retrieves all tasks from the database and returns them as a JSON response.
+//
+// If there is an error fetching tasks, it returns a 500 Internal Server Error response.
+// On success, it returns a 200 OK response with the list of tasks.
 func (h *TaskHandler) GetTasks(context *fiber.Ctx) error {
 	tasks, err := h.Repo.GetAllTasks()
 
@@ -81,6 +92,17 @@ func (h *TaskHandler) GetTasks(context *fiber.Ctx) error {
 	return context.Status(http.StatusOK).JSON(tasks)
 }
 
+// UpdateTask updates an existing task based on the request data.
+// It validates the task ID, checks if the authenticated user is authorized to update the task,
+// and then updates it in the database.
+//
+// If the task ID is invalid, it returns a 500 Internal Server Error response.
+// If the user is not authenticated, it returns a 401 Unauthorized response.
+// If the task does not exist, it returns a 500 Internal Server Error response.
+// If the user is not authorized to update the task, it returns a 401 Unauthorized response.
+// If the request body cannot be parsed, it returns a 400 Bad Request response.
+// If updating the task fails, it returns a 500 Internal Server Error response.
+// On success, it returns a 200 OK response with a success message.
 func (h *TaskHandler) UpdateTask(context *fiber.Ctx) error {
 	taskId, err := strconv.ParseInt(context.Params("id"), 10, 64)
 
@@ -123,6 +145,15 @@ func (h *TaskHandler) UpdateTask(context *fiber.Ctx) error {
 
 }
 
+// DeleteTask deletes a task by its ID after validating user authorization.
+// It ensures that the task exists and that the authenticated user is allowed to delete it.
+//
+// If the task ID is invalid, it returns a 500 Internal Server Error response.
+// If the task does not exist, it returns a 500 Internal Server Error response.
+// If the user is not authenticated, it returns a 401 Unauthorized response.
+// If the user is not authorized to delete the task, it returns a 401 Unauthorized response.
+// If deleting the task fails, it returns a 500 Internal Server Error response.
+// On success, it returns a 200 OK response with a success message.
 func (h *TaskHandler) DeleteTask(context *fiber.Ctx) error {
 	taskId, err := strconv.ParseInt(context.Params("id"), 10, 64)
 
