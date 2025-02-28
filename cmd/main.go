@@ -1,12 +1,21 @@
 package main
 
 import (
+	"log"
+
 	"example.com/task-managment/internal/db"
 	"example.com/task-managment/internal/routes"
 	"github.com/gofiber/fiber/v2"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using system environment variables.")
+	}
 
 	db.InitDB()
 	// Create a new Fiber app
