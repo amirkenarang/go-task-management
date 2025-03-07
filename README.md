@@ -15,6 +15,7 @@ This is a go boilerplate project with `fiber` and `gin`.
     - [Make File](#make-file)
     - [Air](#air)
     - [Bash](#bash)
+  - [TODO](#todo)
   - [Change Log](#change-log)
   - [Author](#author)
 
@@ -102,6 +103,26 @@ Or run with Go
 ```bash
 go run ./cmd
 ```
+
+## TODO
+
+- [x] Best Practices for project structure
+- [x] Separate Models, Repository, Routes, Handlers, Middlewares
+- [x] Add authentication
+- [x] using environment
+- [x] Initialize SQLite database
+- [x] Initialize air
+- [x] Initialize MySQL
+- [x] Initialize Migration
+- [x] Docker: MySQL
+- [x] Initialize Redis
+- [x] Docker: Redis
+- [ ] Initialize NATS
+- [ ] Loging structure
+- [ ] Prometheus server
+- [ ] Initialize Kubernetese
+- [ ] Unit-test coverage
+- [ ] Front-End Application using NextJS
 
 ## Change Log
 
