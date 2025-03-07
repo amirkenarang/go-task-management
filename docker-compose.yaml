@@ -15,5 +15,16 @@ services:
       - mysql-data:/var/lib/mysql
     restart: always
 
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    ports:
+      - "6379:6379" # Exposing Redis default port
+    volumes:
+      - redis-data:/data
+    restart: always
+    command: ["redis-server", "--appendonly", "yes"] # Enables persistence
+
 volumes:
   mysql-data:
+  redis-data:

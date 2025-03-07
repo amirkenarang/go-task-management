@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"example.com/task-managment/internal/cache"
 	"example.com/task-managment/internal/db"
 	"example.com/task-managment/internal/handlers"
 	"example.com/task-managment/internal/repository"
@@ -9,7 +10,7 @@ import (
 
 func TaskRoutes(router fiber.Router) {
 
-	taskRepo := repository.NewTaskRepository(db.DB)
+	taskRepo := repository.NewTaskRepository(db.DB, cache.RedisClient)
 	taskHandler := handlers.NewTaskHandler(taskRepo)
 
 	router.Post("/tasks", taskHandler.CreateTasks)

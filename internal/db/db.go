@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"example.com/task-managment/internal/utils"
 	_ "github.com/go-sql-driver/mysql" // MySQL driver
 	_ "github.com/mattn/go-sqlite3"    // SQLite driver
 )
@@ -27,6 +28,7 @@ func InitDB() {
 			os.Getenv("DB_PORT"),
 			os.Getenv("DB_NAME"),
 		)
+
 		DB, err = sql.Open("mysql", dsn)
 	case "sqlite":
 		dsn = os.Getenv("DB_SQLITE_FILE")
@@ -43,10 +45,8 @@ func InitDB() {
 		log.Fatalf("Database connection error: %v", err)
 	}
 
-	log.Println("Database connected successfully!")
+	utils.LogSuccess("Database connected successfully!")
 
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(5)
-
-	// createTables()
 }

@@ -10,6 +10,7 @@ This is a go boilerplate project with `fiber` and `gin`.
   - [Database](#database)
     - [Run MySQL](#run-mysql)
     - [Migrate tables](#migrate-tables)
+    - [Run Redis](#run-redis)
   - [Run](#run)
     - [Make File](#make-file)
     - [Air](#air)
@@ -32,13 +33,13 @@ To run MySQL with docker compose run `docker compose up -d`.
 
 for running wihtout compose run this command (Set your username and password):
 
-```
+```bash
 docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 -d mysql:latest
 ```
 
 Create a new database in the container:
 
-```
+```bash
 docker exec -it mysql-container mysql -u root -p 
 
 # Then run:
@@ -49,7 +50,7 @@ CREATE DATABASE taask_managment
 
 To migrate tables you can use make commands:
 
-```
+```bash
 # Migrate up
 make migrate-up:
 
@@ -63,6 +64,14 @@ migrate-status:
 make migrate-new
 ```
 
+### Run Redis
+
+To run Redis container with docker compose you can run `docker compose up -d` or if you want to run it separately, run this:
+
+```bash
+docker compose up redis -d
+```
+
 ## Run
 
 Clone Project
@@ -74,7 +83,7 @@ cd go-task-management
 
 ### Make File
 
-```
+```bash
 make run
 ```
 
@@ -90,7 +99,7 @@ air
 
 Or run with Go
 
-```
+```bash
 go run ./cmd
 ```
 

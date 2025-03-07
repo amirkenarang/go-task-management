@@ -1,19 +1,28 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
+	"fmt"
+	"log"
 
+	"example.com/task-managment/internal/cache"
 	"example.com/task-managment/internal/db"
 	"example.com/task-managment/internal/models"
+	"github.com/redis/go-redis/v9"
 )
 
 type TaskRepository struct {
-	DB *sql.DB
+	DB    *sql.DB
+	Redis *redis.Client
 }
 
 // These functions are constructor functions in Go.
-func NewTaskRepository(db *sql.DB) *TaskRepository {
-	return &TaskRepository{DB: db}
+func NewTaskRepository(db *sql.DB, redisClient *redis.Client) *TaskRepository {
+	return &TaskRepository{
+		DB:    db,
+		Redis: redisClient,
+	}
 }
 
 func (r *TaskRepository) Save(task *models.Task) error {
@@ -33,8 +42,16 @@ func (r *TaskRepository) Save(task *models.Task) error {
 	if err != nil {
 		return err
 	}
-
 	task.ID = id
+
+	// Store task in Redis cache
+	ctx := context.Background()
+	cacheKey := fmt.Sprintf("task:%d", task.ID)
+	err = cache.Set(ctx, cacheKey, task, cache.Expiration(cache.ONE_DAY))
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -74,12 +91,22 @@ func (r *TaskRepository) GetAllTasks() ([]models.Task, error) {
 }
 
 func (r *TaskRepository) GetTaskById(id int64) (*models.Task, error) {
+	// Get task from Redis
+	ctx := context.Background()
+	cacheKey := fmt.Sprintf("task:%d", id)
+
+	var task models.Task
+	err := cache.Get(ctx, cacheKey, &task)
+	if err == nil {
+		return &task, nil
+	} else {
+		log.Println("Key does not exists in cache!")
+	}
+
 	query := "SELECT id, title, description, status, priority, due_date, user_id, project_id, created_at, updated_at FROM tasks WHERE id = ?"
 	row := r.DB.QueryRow(query, id)
 
-	var task models.Task
-
-	err := row.Scan(
+	err = row.Scan(
 		&task.ID,
 		&task.Title,
 		&task.Description,
@@ -95,6 +122,9 @@ func (r *TaskRepository) GetTaskById(id int64) (*models.Task, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// Save in reids
+	cache.Set(ctx, cacheKey, task, cache.Expiration(cache.ONE_DAY))
 
 	return &task, nil
 }
