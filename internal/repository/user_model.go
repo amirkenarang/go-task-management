@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 
-	"example.com/task-managment/internal/models"
-	"example.com/task-managment/internal/utils"
+	"example.com/task-management/internal/models"
+	"example.com/task-management/internal/utils"
 )
 
 type UserRepository struct {

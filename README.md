@@ -44,7 +44,7 @@ Create a new database in the container:
 docker exec -it mysql-container mysql -u root -p 
 
 # Then run:
-CREATE DATABASE taask_managment
+CREATE DATABASE task_management
 ```
 
 ### Migrate tables
@@ -71,6 +71,12 @@ To run Redis container with docker compose you can run `docker compose up -d` or
 
 ```bash
 docker compose up redis -d
+```
+
+Check redis with:
+
+```bash
+docker exec -it redis-container redis-cli
 ```
 
 ## Run

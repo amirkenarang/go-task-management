@@ -3,9 +3,9 @@ package handlers
 import (
 	"net/http"
 
-	"example.com/task-managment/internal/models"
-	"example.com/task-managment/internal/repository"
-	"example.com/task-managment/internal/utils"
+	"example.com/task-management/internal/models"
+	"example.com/task-management/internal/repository"
+	"example.com/task-management/internal/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

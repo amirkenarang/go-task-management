@@ -1,4 +1,4 @@
-module example.com/task-managment
+module example.com/task-management
 
 go 1.22.0
 

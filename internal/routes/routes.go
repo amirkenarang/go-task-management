@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"example.com/task-managment/internal/middlewares"
+	"example.com/task-management/internal/middlewares"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )

@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	"example.com/task-managment/internal/utils"
+	"example.com/task-management/internal/utils"
 	"github.com/fatih/color"
 	"github.com/redis/go-redis/v9"
 )

@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"example.com/task-managment/internal/cache"
-	"example.com/task-managment/internal/db"
-	"example.com/task-managment/internal/routes"
+	"example.com/task-management/internal/cache"
+	"example.com/task-management/internal/db"
+	"example.com/task-management/internal/routes"
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/joho/godotenv"

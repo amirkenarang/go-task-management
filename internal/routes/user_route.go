@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"example.com/task-managment/internal/db"
-	"example.com/task-managment/internal/handlers"
-	"example.com/task-managment/internal/repository"
+	"example.com/task-management/internal/db"
+	"example.com/task-management/internal/handlers"
+	"example.com/task-management/internal/repository"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"log"
 
-	"example.com/task-managment/internal/cache"
-	"example.com/task-managment/internal/db"
-	"example.com/task-managment/internal/models"
+	"example.com/task-management/internal/cache"
+	"example.com/task-management/internal/db"
+	"example.com/task-management/internal/models"
 	"github.com/redis/go-redis/v9"
 )
 

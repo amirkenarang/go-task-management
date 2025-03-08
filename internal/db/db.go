@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"example.com/task-managment/internal/utils"
+	"example.com/task-management/internal/utils"
 	_ "github.com/go-sql-driver/mysql" // MySQL driver
 	_ "github.com/mattn/go-sqlite3"    // SQLite driver
 )

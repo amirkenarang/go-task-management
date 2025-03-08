@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"example.com/task-managment/internal/repository"
-	"example.com/task-managment/internal/utils"
+	"example.com/task-management/internal/repository"
+	"example.com/task-management/internal/utils"
 
-	"example.com/task-managment/internal/models"
+	"example.com/task-management/internal/models"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -3,7 +3,7 @@ package middlewares
 import (
 	"net/http"
 
-	"example.com/task-managment/internal/utils"
+	"example.com/task-management/internal/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
