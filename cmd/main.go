@@ -5,6 +5,8 @@ import (
 
 	"example.com/task-management/internal/cache"
 	"example.com/task-management/internal/db"
+	"example.com/task-management/internal/middlewares"
+	"example.com/task-management/internal/monitoring"
 	"example.com/task-management/internal/routes"
 	"github.com/gofiber/fiber/v2"
 
@@ -25,13 +27,25 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error in connect to redis")
 	}
+
+	// Initialize Prometheus
+	monitoring.Init()
+
 	// Create a new Fiber app
 	app := fiber.New()
+
+	// Add Prometheus middleware
+	app.Use(middlewares.PrometheusMiddleware)
 
 	// Register all routes
 	routes.RegisterRoutes(app)
 
-	// Start the server at localhost:8080
-	app.Listen(":8080")
+	// Expose metrics endpoint
+	app.Get("/metrics", func(c *fiber.Ctx) error {
+		monitoring.ServeMetrics(c)
+		return nil
+	})
+
+	log.Fatal(app.Listen(":2112"))
 
 }

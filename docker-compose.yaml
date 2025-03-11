@@ -10,7 +10,7 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     restart: always
@@ -19,12 +19,45 @@ services:
     image: redis:latest
     container_name: redis-container
     ports:
-      - "6379:6379" # Exposing Redis default port
+      - "6380:6379" # Exposing Redis default port
     volumes:
       - redis-data:/data
     restart: always
     command: ["redis-server", "--appendonly", "yes"] # Enables persistence
 
+  goapp:
+    build: .
+    container_name: goapp-container
+    ports:
+      - "2112:2112"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      - DB_DRIVER=${DB_DRIVER}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_SQLITE_FILE=${DB_SQLITE_FILE}
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_PATH=${REDIS_PATH}
+      - REDIS_PORT=${REDIS_PORT}
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus-container
+    depends_on:
+      - goapp
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    restart: always
+
 volumes:
-  mysql-data:
   redis-data:
+  mysql-data:
+  prometheus-data:

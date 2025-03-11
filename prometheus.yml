@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 5s # How often to scrape targets
+
+scrape_configs:
+  - job_name: "task-management"
+    static_configs:
+      - targets: ["goapp-container:2112"]

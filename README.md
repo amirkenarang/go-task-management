@@ -44,7 +44,9 @@ Create a new database in the container:
 docker exec -it mysql-container mysql -u root -p 
 
 # Then run:
-CREATE DATABASE task_management
+CREATE DATABASE task_management;
+
+SHOW DATABASES;
 ```
 
 ### Migrate tables
@@ -125,10 +127,12 @@ go run ./cmd
 - [x] Docker: Redis
 - [ ] Initialize NATS
 - [ ] Loging structure
-- [ ] Prometheus server
+- [ ] Monitoring
+  - [x] Prometheus server
+  - [ ] Grafana
 - [ ] Initialize Kubernetese
 - [ ] Unit-test coverage
-- [ ] Front-End Application using NextJS
+- [x] Front-End Application using NextJS [NextJS APP](https://github.com/amirkenarang/nextjs-task-management)
 
 ## Change Log
 
