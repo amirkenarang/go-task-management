@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.2.1
+
+- Added user Management APIs
+
 ## 1.2.0
 
 - Redis added
