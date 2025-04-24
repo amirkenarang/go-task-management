@@ -14,6 +14,8 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     restart: always
+    networks:
+      - task-managment-network
 
   redis:
     image: redis:latest
@@ -24,6 +26,8 @@ services:
       - redis-data:/data
     restart: always
     command: ["redis-server", "--appendonly", "yes"] # Enables persistence
+    networks:
+      - task-managment-network
 
   goapp:
     build: .
@@ -45,6 +49,8 @@ services:
       - REDIS_PATH=${REDIS_PATH}
       - REDIS_PORT=${REDIS_PORT}
     restart: always
+    networks:
+      - task-managment-network
 
   prometheus:
     image: prom/prometheus:latest
@@ -56,8 +62,15 @@ services:
     ports:
       - "9090:9090"
     restart: always
+    networks:
+      - task-managment-network
 
 volumes:
   redis-data:
   mysql-data:
   prometheus-data:
+
+networks:
+  task-managment-network:
+    name: task-managment-network
+    external: true

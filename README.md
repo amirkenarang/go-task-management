@@ -117,14 +117,16 @@ go run ./cmd
 - [x] Best Practices for project structure
 - [x] Separate Models, Repository, Routes, Handlers, Middlewares
 - [x] Add authentication
+- [x] Managment
 - [x] using environment
+- [x] Using fiber and gin
 - [x] Initialize SQLite database
 - [x] Initialize air
 - [x] Initialize MySQL
-- [x] Initialize Migration
-- [x] Docker: MySQL
+  - [x] Initialize Migration
+  - [x] Docker: MySQL
 - [x] Initialize Redis
-- [x] Docker: Redis
+  - [x] Docker: Redis
 - [ ] Initialize NATS
 - [ ] Loging structure
 - [ ] Monitoring

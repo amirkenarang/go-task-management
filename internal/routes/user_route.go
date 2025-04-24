@@ -1,18 +1,21 @@
 package routes
 
 import (
+	"example.com/task-management/internal/cache"
 	"example.com/task-management/internal/db"
 	"example.com/task-management/internal/handlers"
 	"example.com/task-management/internal/repository"
 	"github.com/gofiber/fiber/v2"
 )
 
-// UserRoutes registers user-related endpoints
 func UserRoutes(router fiber.Router) {
 
-	userRepo := repository.NewUserRepository(db.DB)
+	userRepo := repository.NewUserRepository(db.DB, cache.RedisClient)
 	userHandler := handlers.NewUserHandler(userRepo)
 
-	router.Post("/signup", userHandler.SignUp)
-	router.Post("/login", userHandler.Login)
+	router.Post("/users", userHandler.CreateUser)
+	router.Get("/users", userHandler.GetUsers)
+	router.Get("/users/:id", userHandler.GetUser)
+	router.Put("/users/:id", userHandler.UpdateUser)
+	router.Delete("/users/:id", userHandler.DeleteUser)
 }
